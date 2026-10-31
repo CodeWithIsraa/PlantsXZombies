@@ -1,4 +1,4 @@
-package plantsvszombies_project;
+package Model;
 
 /** Zombie wearing a cone: twice the health of a default zombie. */
 public class ConeZombie extends Zombie {

@@ -1,4 +1,4 @@
-package plantsvszombies_project;
+package Model;
 
 /** Zombie wearing a helmet: the strongest zombie, more health and a harder bite. */
 public class HelmetZombie extends Zombie {

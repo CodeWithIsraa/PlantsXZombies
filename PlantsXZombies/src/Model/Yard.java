@@ -1,4 +1,4 @@
-package plantsvszombies_project;
+package Model;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package plantsvszombies_project;
+package Model;
 
 /** The normal zombie: no protection. */
 public class DefaultZombie extends Zombie {

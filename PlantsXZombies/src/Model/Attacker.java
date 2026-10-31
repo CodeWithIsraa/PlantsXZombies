@@ -1,5 +1,5 @@
 
-package plantsvszombies_project;
+package Model;
 
 public interface Attacker {
     void action();
