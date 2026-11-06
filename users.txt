@@ -1,2 +1,0 @@
-admin,admin,ADMIN
-israa,4567,PLAYER
