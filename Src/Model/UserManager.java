@@ -34,21 +34,18 @@ public class UserManager {
     /**
      * Adds a new user if the requester has administrative privileges.
      */
-    public boolean addUser(User requester, User user) {
-        // Simple permission check: requester must be an Admin
-        if (requester == null || !requester.isAdmin()) {
-            return false;
-        }
-
-        // Prevent duplicate usernames
-        if (findUser(user.getUsername()) != null) {
-            return false;
-        }
-
-        users.add(user);
-        save();
-        return true;
+   public void addUser(User requester, User user) throws UserException {
+    if (requester == null || !requester.isAdmin()) {
+        throw new UserException("Only an admin can add users.");
     }
+
+    if (findUser(user.getUsername()) != null) {
+        throw new UserException("Username already exists: " + user.getUsername());
+    }
+
+    users.add(user);
+    save();
+}
 
     /**
      * Edits a user's details if the requester has administrative privileges.
