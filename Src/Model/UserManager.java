@@ -3,12 +3,13 @@ package Model;
 import java.util.ArrayList;
 
 public class UserManager {
+
     private ArrayList<User> users;
     private FileHandler fileHandler;
 
     /**
-     * Constructor initializing UserManager with a FileHandler 
-     * and loading existing users from the file.
+     * Constructor initializing UserManager with a FileHandler and loading
+     * existing users from the file.
      */
     public UserManager(FileHandler fileHandler) {
         this.fileHandler = fileHandler;
@@ -31,33 +32,28 @@ public class UserManager {
         return null;
     }
 
-    /**
-     * Adds a new user if the requester has administrative privileges.
-     */
-   public void addUser(User requester, User user) throws UserException {
-    if (requester == null || !requester.isAdmin()) {
-        throw new UserException("Only an admin can add users.");
-    }
-
-    if (findUser(user.getUsername()) != null) {
-        throw new UserException("Username already exists: " + user.getUsername());
-    }
-
-    users.add(user);
-    save();
-}
-
-    /**
-     * Edits a user's details if the requester has administrative privileges.
-     */
-    public boolean editUser(User requester, String username, String newUsername, String newPassword) {
+   
+    public void addUser(User requester, User user) throws UserException {
         if (requester == null || !requester.isAdmin()) {
-            return false;
+            throw new UserException("Only an admin can add users.");
+        }
+
+        if (findUser(user.getUsername()) != null) {
+            throw new UserException("Username already exists: " + user.getUsername());
+        }
+
+        users.add(user);
+        save();
+    }
+
+    public void editUser(User requester, String username, String newUsername, String newPassword) throws UserException {
+        if (requester == null || !requester.isAdmin()) {
+            throw new UserException("Only an admin can edit users.");
         }
 
         User existingUser = findUser(username);
         if (existingUser == null) {
-            return false;
+            throw new UserException("User not found: " + username);
         }
 
         if (newUsername != null && !newUsername.trim().isEmpty()) {
@@ -68,25 +64,20 @@ public class UserManager {
         }
 
         save();
-        return true;
     }
 
-    /**
-     * Deletes a user by username if the requester has administrative privileges.
-     */
-    public boolean deleteUser(User requester, String username) {
+    public void deleteUser(User requester, String username) throws UserException {
         if (requester == null || !requester.isAdmin()) {
-            return false;
+            throw new UserException("Only an admin can delete users.");
         }
 
         User existingUser = findUser(username);
-        if (existingUser != null) {
-            users.remove(existingUser);
-            save();
-            return true;
+        if (existingUser == null) {
+            throw new UserException("User not found: " + username);
         }
 
-        return false;
+        users.remove(existingUser);
+        save();
     }
 
     /**
@@ -99,13 +90,13 @@ public class UserManager {
     /**
      * Authenticates a user given username and password.
      */
-    public User login(String username, String password) {
-        User u = findUser(username);
-        if (u != null && u.getPassword().equals(password)) {
-            return u;
-        }
-        return null;
+  public User login(String username, String password) throws UserException {
+    User u = findUser(username);
+    if (u == null || !u.getPassword().equals(password)) {
+        throw new UserException("Wrong username or password.");
     }
+    return u;
+}
 
     /**
      * Saves the current list of users to storage via FileHandler.

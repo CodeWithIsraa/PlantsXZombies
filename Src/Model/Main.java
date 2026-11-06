@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Menu-driven program that tests all the classes and their methods.
- * Log in first (first time: admin / admin), then choose what to test.
+ * Menu-driven program that tests all the classes and their methods. Log in
+ * first (first time: admin / admin), then choose what to test.
  */
 public class Main {
 
@@ -25,23 +25,44 @@ public class Main {
             System.out.println("4) Test Sun / Pea / LawnMower   5) Test Yard   6) Test WaveManager");
             System.out.println("7) Test enums and interfaces   8) Log out   0) Exit");
             switch (ask("> ")) {
-                case "1": usersMenu(); break;
-                case "2": testPlants(); break;
-                case "3": testZombies(); break;
-                case "4": testElements(); break;
-                case "5": testYard(); break;
-                case "6": testWaves(); break;
-                case "7": testEnumsAndInterfaces(); break;
-                case "8": current = null; break;
-                case "0": System.out.println("Bye!"); return;
-                default: System.out.println("Invalid choice.");
+                case "1":
+                    usersMenu();
+                    break;
+                case "2":
+                    testPlants();
+                    break;
+                case "3":
+                    testZombies();
+                    break;
+                case "4":
+                    testElements();
+                    break;
+                case "5":
+                    testYard();
+                    break;
+                case "6":
+                    testWaves();
+                    break;
+                case "7":
+                    testEnumsAndInterfaces();
+                    break;
+                case "8":
+                    current = null;
+                    break;
+                case "0":
+                    System.out.println("Bye!");
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
             }
         }
     }
 
     // ---------- login ----------
-
-    /** Asks for username and password. Returns false if the user types 0 to exit. */
+    /**
+     * Asks for username and password. Returns false if the user types 0 to
+     * exit.
+     */
     private static boolean login() {
         while (true) {
             System.out.println("\n-- Login (first time: admin / admin, type 0 to exit)");
@@ -49,17 +70,16 @@ public class Main {
             if (username.equals("0")) {
                 return false;
             }
-            User user = users.login(username, ask("Password: "));
-            if (user != null) {
-                current = user;
+            try {
+                current = users.login(username, ask("Password: "));
                 return true;
+            } catch (UserException e) {
+                System.out.println(e.getMessage());
             }
-            System.out.println("Wrong username or password.");
         }
     }
 
     // ---------- users (add, edit, delete, list) ----------
-
     private static void usersMenu() {
         while (true) {
             System.out.println("\n-- Users: 1) Add  2) Edit  3) Delete  4) List  0) Back (only admins can add, edit, delete)");
@@ -68,30 +88,46 @@ public class Main {
                     String name = ask("Username: ");
                     String pass = ask("Password: ");
                     User newUser = ask("Role (1=ADMIN, 2=PLAYER): ").equals("1") ? new Admin(name, pass) : new Player(name, pass);
-                    System.out.println(users.addUser(current, newUser) ? "User added." : "Not added (not an admin, or username exists).");
+                    try {
+                        users.addUser(current, newUser);
+                        System.out.println("User added.");
+                    } catch (UserException e) {
+                        System.out.println("Not added: " + e.getMessage());
+                    }
                     break;
                 case "2":
                     String old = ask("Username to edit: ");
                     String newName = ask("New username (empty = keep): ");
                     String newPass = ask("New password (empty = keep): ");
-                    System.out.println(users.editUser(current, old, newName, newPass) ? "User updated." : "Not updated (not an admin, or user not found).");
+                    try {
+                        users.editUser(current, old, newName, newPass);
+                        System.out.println("User updated.");
+                    } catch (UserException e) {
+                        System.out.println("Not updated: " + e.getMessage());
+                    }
                     break;
                 case "3":
-                    System.out.println(users.deleteUser(current, ask("Username to delete: ")) ? "User deleted." : "Not deleted (not an admin, or user not found).");
+                    try {
+                        users.deleteUser(current, ask("Username to delete: "));
+                        System.out.println("User deleted.");
+                    } catch (UserException e) {
+                        System.out.println("Not deleted: " + e.getMessage());
+                    }
                     break;
                 case "4":
                     for (User user : users.listUsers()) {
                         System.out.println(" - " + user.getUsername() + " (" + user.getRole() + ")");
                     }
                     break;
-                case "0": return;
-                default: System.out.println("Invalid choice.");
+                case "0":
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
             }
         }
     }
 
     // ---------- tests ----------
-
     private static void testPlants() {
         System.out.println("\n-- Plants");
         ArrayList<Plant> plants = new ArrayList<>();
